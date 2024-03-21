@@ -9,9 +9,7 @@ const {
 } = require('./utils');
 const { HELP } = require('./data');
 
-const AHORCADO_BOT_HTTP_API_TOKEN =
-	'5879299799:AAE7CoaSwohquvBgvc1ozVy9FFcj2CD6Qlo';
-// const BOT = 'Ahorcado_Bot:';
+const AHORCADO_BOT_HTTP_API_TOKEN = process.env.AHORCADO_BOT_HTTP_API_TOKEN;
 const BOT = '';
 
 const bot = new Telegraf(AHORCADO_BOT_HTTP_API_TOKEN);
