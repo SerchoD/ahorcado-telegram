@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Telegraf } = require('telegraf');
 const {
 	wordToArray,
@@ -9,10 +10,11 @@ const {
 } = require('./utils');
 const { HELP } = require('./data');
 
-const AHORCADO_BOT_HTTP_API_TOKEN = process.env.AHORCADO_BOT_HTTP_API_TOKEN;
+const HTTP_API_TOKEN = process.env.AHORCADO_BOT_HTTP_API_TOKEN;
+console.log('AHORCADO_BOT_HTTP_API_TOKEN: ', HTTP_API_TOKEN);
 const BOT = '';
 
-const bot = new Telegraf(AHORCADO_BOT_HTTP_API_TOKEN);
+const bot = new Telegraf(HTTP_API_TOKEN);
 
 const regex = { onlyLetters: /^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/ };
 // ---
