@@ -45,8 +45,10 @@ bot.command('reset', (ctx) => {
 });
 
 bot.command('new_game', (ctx) => {
-	const deleteMessage = () =>
+	const deleteMessage = () => {
+		// TODO Evitar que rompa si el boto no es ADMIN
 		bot.telegram.deleteMessage(ctx.chat.id, ctx.message.message_id);
+	}
 	resetState();
 	deleteMessage();
 
