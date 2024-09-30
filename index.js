@@ -44,39 +44,48 @@ bot.command('reset', (ctx) => {
 	resetState();
 });
 
-bot.command('new_game', (ctx) => {
-	const deleteMessage = () => {
-		// TODO Evitar que rompa si el boto no es ADMIN
-		bot.telegram.deleteMessage(ctx.chat.id, ctx.message.message_id);
-	}
+bot.command('new_game', async (ctx) => {
+	const deleteMessage = async () => {
+	  try {
+		const chatMember = await bot.telegram.getChatMember(ctx.chat.id, ctx.botInfo.id);
+		const canDeleteMessages = chatMember?.can_delete_messages;
+  
+		if (canDeleteMessages) {
+		  await bot.telegram.deleteMessage(ctx.chat.id, ctx.message.message_id);
+		} else {
+		  ctx.replyWithHTML(`<b>${BOT}</b> \nNo tengo permisos para borrar mensajes.`);
+		}
+	  } catch (error) {
+		ctx.replyWithHTML(`<b>${BOT}</b> \nError al verificar permisos: ${error.message}`);
+	  }
+	};
+  
 	resetState();
-	deleteMessage();
-
+	await deleteMessage();
+  
 	const message = ctx?.message?.text?.split(/\s+/);
 	const word = quitarTildes(message[1]);
-
+  
 	const isNumber = !isNaN(message[1]);
 	const isSimbol = !regex.onlyLetters.test(message[1]);
-
+  
 	if (message.length !== 2 || isNumber || isSimbol) {
-		ctx.replyWithHTML(
-			`<b>${BOT}</b> \nPara empezar una Nuevo Juego, debes enviar una sola palabra, sin espacios, y          solo con letras.`
-		);
-		return;
+	  ctx.replyWithHTML(
+		`<b>${BOT}</b> \nPara empezar una Nuevo Juego, debes enviar una sola palabra, sin espacios, y solo con letras.`
+	  );
+	  return;
 	}
-
+  
 	state.secretWord = wordToArray(word.toLowerCase());
-	state.playingWord = generatePlayingWord(
-		state?.secretWord,
-		state?.triedLetters
-	);
-
+	state.playingWord = generatePlayingWord(state?.secretWord, state?.triedLetters);
+  
 	ctx.replyWithHTML(
-		`<b>${BOT}</b> \nSe inició un nuevo juego, suerte! \n <b>${state?.playingWord?.join(
-			' '
-		)}  ( ${state?.wrongLetters.join(' ')} )</b>`
+	  `<b>${BOT}</b> \nSe inició un nuevo juego, suerte! \n <b>${state?.playingWord?.join(
+		' '
+	  )}  ( ${state?.wrongLetters.join(' ')} )</b>`
 	);
-});
+  });
+  
 
 bot.command('try', (ctx) => {
 	const message = ctx?.message?.text?.split(/\s+/);
