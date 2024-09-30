@@ -50,14 +50,14 @@ bot.command('new_game', async (ctx) => {
 		const chatMember = await bot.telegram.getChatMember(ctx.chat.id, ctx.botInfo.id);
 		const canDeleteMessages = chatMember?.can_delete_messages;
 		console.log('canDeleteMessages: ', canDeleteMessages)
-		
+
 		if (canDeleteMessages) {
 		  await bot.telegram.deleteMessage(ctx.chat.id, ctx.message.message_id);
 		} else {
-		  ctx.replyWithHTML(`<b>${BOT}</b> \nNo tengo permisos para borrar mensajes.`);
+		  return ctx.replyWithHTML(`<b>${BOT}</b> \nNo tengo permisos para borrar mensajes.`);
 		}
 	  } catch (error) {
-		ctx.replyWithHTML(`<b>${BOT}</b> \nError al verificar permisos: ${error.message}`);
+		return ctx.replyWithHTML(`<b>${BOT}</b> \nError al verificar permisos: ${error.message}`);
 	  }
 	};
   
