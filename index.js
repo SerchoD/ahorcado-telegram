@@ -49,7 +49,8 @@ bot.command('new_game', async (ctx) => {
 	  try {
 		const chatMember = await bot.telegram.getChatMember(ctx.chat.id, ctx.botInfo.id);
 		const canDeleteMessages = chatMember?.can_delete_messages;
-  
+		console.log('canDeleteMessages: ', canDeleteMessages)
+		
 		if (canDeleteMessages) {
 		  await bot.telegram.deleteMessage(ctx.chat.id, ctx.message.message_id);
 		} else {
