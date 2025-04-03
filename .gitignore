@@ -1,5 +1,5 @@
 # Ignorar el directorio node_modules y su contenido
-node_modules/
+/node_modules
 
 # Ignorar archivos de registro
 *.log
