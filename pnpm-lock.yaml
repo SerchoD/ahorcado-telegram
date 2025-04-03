@@ -9,10 +9,10 @@ importers:
   .:
     dependencies:
       dotenv:
-        specifier: ^16.4.7
+        specifier: ^16.4.5
         version: 16.4.7
       telegraf:
-        specifier: ^4.16.3
+        specifier: ^4.12.2
         version: 4.16.3
     devDependencies:
       nodemon:
