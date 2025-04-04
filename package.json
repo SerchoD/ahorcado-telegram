@@ -1,11 +1,14 @@
 {
   "name": "ahorcado_bot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "This is an automatic CLI telegram bot to play Ahorcado ('Hangman game').",
-  "main": "src/functions/index.js",
+  "main": "dist/functions/bot.js",
   "scripts": {
-    "dev": "nodemon src/functions/index.js"
+    "dev": "nodemon --exec pnpm tsx src/functions/bot.ts",
+    "lint": "eslint . --ext js,jsx,ts,tsx && echo '\\e[32m\\e[1m✔  Your code is amazing!\\e[0m'",
+    "build": "tsc",
+    "start": "node dist/functions/bot.js"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +18,19 @@
     "telegraf": "^4.16.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "@eslint/js": "^9.23.0",
+    "@types/node": "^22.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.29.0",
+    "@typescript-eslint/parser": "^8.29.0",
+    "eslint": "8",
+    "eslint-config-prettier": "^10.1.1",
+    "globals": "^16.0.0",
+    "jiti": "^2.4.2",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.29.0"
   }
 }
