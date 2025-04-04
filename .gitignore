@@ -1,4 +1,4 @@
-# Ignorar el directorio node_modules y su contenido
+# Ignorar el directorio node_modules en cualquier nivel
 node_modules/
 
 # Ignorar archivos de registro
