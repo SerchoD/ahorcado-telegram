@@ -14,7 +14,7 @@ export const new_game = async (ctx: Context, gameState: GameState) => {
 
   // Check if the message exists and is a text message
   if (!message || !("text" in message)) {
-    return ctx.replyWithHTML(
+    return await ctx.replyWithHTML(
       "Este comando solo funciona con mensajes de texto."
     );
   }
@@ -26,7 +26,9 @@ export const new_game = async (ctx: Context, gameState: GameState) => {
 
   // Validate essential data
   if (!chatId || !botInfoId || !messageText || !messageId) {
-    return ctx.replyWithHTML("Datos insuficientes en el contexto del mensaje.");
+    return await ctx.replyWithHTML(
+      "Datos insuficientes en el contexto del mensaje."
+    );
   }
 
   // Delete message if permissions are granted
@@ -39,12 +41,14 @@ export const new_game = async (ctx: Context, gameState: GameState) => {
       if (canDeleteMessages) {
         await bot.telegram.deleteMessage(chatId, messageId);
       } else {
-        return ctx.replyWithHTML(`\nNo tengo permisos para borrar mensajes.`);
+        return await ctx.replyWithHTML(
+          `\nNo tengo permisos para borrar mensajes.`
+        );
       }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Error desconocido";
-      return ctx.replyWithHTML(
+      return await ctx.replyWithHTML(
         `\nError al verificar permisos: ${errorMessage}`
       );
     }
@@ -62,7 +66,7 @@ export const new_game = async (ctx: Context, gameState: GameState) => {
   const isNotOneWord = messageParts.length !== 2;
 
   if (isNotOneWord || isNumber || isSymbol) {
-    return ctx.replyWithHTML(
+    return await ctx.replyWithHTML(
       `\nPara empezar un Nuevo Juego, debes enviar una sola palabra, sin espacios, y solo con letras.`
     );
   }
@@ -75,7 +79,7 @@ export const new_game = async (ctx: Context, gameState: GameState) => {
   );
 
   // Send the response to the chat
-  ctx.replyWithHTML(
+  await ctx.replyWithHTML(
     `\nSe inició un nuevo juego, suerte! \n <b>${gameState.playingWord.join(
       " "
     )}  ( ${gameState.wrongLetters.join(" ")} )</b>`

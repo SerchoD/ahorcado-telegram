@@ -40,3 +40,7 @@ export const getRandomElement = <T>(array: T[]): T =>
 // Formats a name with the first letter capitalized
 export const formatName = (name: string): string =>
   name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+
+export const randomMinMax = (min: number, max: number): number => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};

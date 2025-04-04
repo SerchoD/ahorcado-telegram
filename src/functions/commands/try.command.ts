@@ -3,113 +3,123 @@ import { regex } from "../../data/rexex.js";
 import {
   areArraysEqual,
   generatePlayingWord,
+  getRandomElement,
   quitarTildes,
+  randomMinMax,
 } from "../../utils/utils.js";
 import { GameState } from "../bot.js";
+import { CONSECUTIVE_FAIL_COMMENTS } from "../../data/data.js";
 
-export const try_command = (ctx: Context, gameState: GameState) => {
+export const try_command = async (
+  ctx: Context,
+  gameState: GameState,
+  resetGameCallBack: () => void
+) => {
+  // Check if the message is text
   const messageIsText = ctx.message && "text" in ctx.message;
-
   if (!messageIsText) {
-    // Stops if message is not a text: (audio, picture, etc...)
     return;
   }
 
-  const message: string[] = ctx?.message?.text?.split(/\s+/);
+  // Split message into parts and get the letter to try
+  const message: string[] = ctx.message.text.split(/\s+/);
   const letterToTry =
-    message[1] && quitarTildes(message[1]?.toLocaleLowerCase());
+    message[1] && quitarTildes(message[1].toLocaleLowerCase());
 
   const isNumber = !isNaN(Number(message[1]));
-  const isSimbol = !regex.onlyLetters.test(message[1]);
+  const isSymbol = !regex.onlyLetters.test(message[1]);
 
   if (
-    message?.length !== 2 ||
-    message[1]?.length != 1 ||
+    message.length !== 2 ||
+    message[1].length !== 1 ||
     isNumber ||
-    isSimbol ||
+    isSymbol ||
     !letterToTry
   ) {
-    ctx.replyWithHTML(
+    await ctx.replyWithHTML(
       `\nLuego de "/try" debes mandar Una Letra Sola, no: "${
-        message?.slice(1).join(" ") || "nada"
+        message.slice(1).join(" ") || "nada"
       }"`
     );
     return;
   }
 
-  const isSecretWord = gameState?.secretWord.length <= 0;
-
-  if (isSecretWord) {
-    return ctx.replyWithHTML(
+  // Check if secret word is set
+  if (gameState.secretWord.length <= 0) {
+    return await ctx.replyWithHTML(
       `\nDebe establecer una palabra con <b>/new_game</b> para empezar a jugar.`
     );
   }
 
-  const letterWasAlreadyTried = gameState?.triedLetters?.includes(letterToTry);
-
-  if (!letterWasAlreadyTried) {
-    gameState.triedLetters.push(letterToTry);
-  }
-  gameState.playingWord = generatePlayingWord(
-    gameState?.secretWord,
-    gameState?.triedLetters
-  );
-
+  // Check if the letter was already tried
+  const letterWasAlreadyTried = gameState.triedLetters.includes(letterToTry);
   if (letterWasAlreadyTried) {
-    ctx.replyWithHTML(
-      `\nLa letra: '<b>${letterToTry?.toUpperCase()}</b>' ya fue probada.`
+    await ctx.replyWithHTML(
+      `\nLa letra: '<b>${letterToTry.toUpperCase()}</b>' ya fue probada.`
     );
-    ctx.replyWithHTML(
-      `\n <b>${gameState?.playingWord?.join(
+    await ctx.replyWithHTML(
+      `\n<b>${gameState.playingWord.join(" ")}  ( ${gameState.wrongLetters.join(
         " "
-      )}  ( ${gameState?.wrongLetters.join(" ")} )</b>`
+      )} )</b>`
     );
     return;
   }
 
-  // Save a letter if is a fail
-  gameState?.triedLetters.forEach((letter: string) => {
-    if (
-      !gameState?.secretWord.includes(letter) &&
-      !gameState?.wrongLetters.includes(letter)
-    ) {
-      gameState.loseCounter = gameState?.loseCounter + 1;
-      gameState.wrongLetters.unshift(letter);
-      gameState.wrongLetters.pop();
-    }
-  });
+  // Add letter to tried letters
+  gameState.triedLetters.push(letterToTry);
 
-  // Cheks if you win
-  if (areArraysEqual(gameState?.secretWord, gameState?.playingWord)) {
-    return ctx.replyWithHTML(
-      `\n <b>${gameState?.playingWord?.join(
-        ""
-      )}  ( ${gameState?.wrongLetters.join(
+  // Check if letter is in secret word
+  if (gameState.secretWord.includes(letterToTry)) {
+    gameState.consecutiveFails = 0; // Reset consecutive fails on correct guess
+  } else {
+    gameState.consecutiveFails++; // Increment consecutive fails on wrong guess
+    gameState.loseCounter++;
+    gameState.wrongLetters.unshift(letterToTry);
+    gameState.wrongLetters.pop();
+  }
+
+  // Update the playing word
+  gameState.playingWord = generatePlayingWord(
+    gameState.secretWord,
+    gameState.triedLetters
+  );
+
+  // Check for win
+  if (areArraysEqual(gameState.secretWord, gameState.playingWord)) {
+    await ctx.replyWithHTML(
+      `\n<b>${gameState.playingWord.join("")}  ( ${gameState.wrongLetters.join(
         " "
       )} )</b> - <b>VICTORIA! ✅✅✅</b>`
     );
+    resetGameCallBack();
+    return;
   }
 
-  // Cheks if you lose
-  if (gameState?.loseCounter === 6) {
-    return ctx.replyWithHTML(
-      `\n <b>${gameState?.secretWord
-        ?.map((e, index) => {
-          if (index === 0) {
-            return e.toUpperCase();
-          } else {
-            return e;
-          }
-        })
-        .join("")}  ( ${gameState?.wrongLetters.join(
-        " "
-      )} )</b> - <b>DERROTA! ❌❌❌</b>`
+  // Check for loss
+  if (gameState.loseCounter === 6) {
+    await ctx.replyWithHTML(
+      `\n<b>${gameState.secretWord
+        .map((e, index) => (index === 0 ? e.toUpperCase() : e))
+        .join(
+          ""
+        )}  ( ${gameState.wrongLetters.join(" ")} )</b> - <b>DERROTA! ❌❌❌</b>`
+    );
+    resetGameCallBack();
+    return;
+  }
+
+  // Send a random spicy comment if consecutive fails reach 5
+  const failThreshold = randomMinMax(4, 5);
+  if (gameState.consecutiveFails >= failThreshold) {
+    const randomComment = getRandomElement(CONSECUTIVE_FAIL_COMMENTS);
+    await ctx.replyWithHTML(
+      `\n<span class='tg-spoiler'>${randomComment}</span>`
     );
   }
 
-  return ctx.replyWithHTML(
-    `\n <b>${gameState?.playingWord?.join(
+  return await ctx.replyWithHTML(
+    `\n<b>${gameState.playingWord.join(" ")}  ( ${gameState.wrongLetters.join(
       " "
-    )}  ( ${gameState?.wrongLetters.join(" ")} )</b>`
+    )} )</b>`
   );
 };

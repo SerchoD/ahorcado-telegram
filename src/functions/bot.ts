@@ -16,6 +16,7 @@ export interface GameState {
   wrongLetters: string[];
   loseCounter: number;
   winCounter: number;
+  consecutiveFails: number;
 }
 
 // Initial game state generator
@@ -26,10 +27,12 @@ const initialState = (): GameState => ({
   wrongLetters: ["□", "□", "□", "□", "□", "□"],
   loseCounter: 0,
   winCounter: 0,
+  consecutiveFails: 0,
 });
 
 // Game state database for multiple chats
 const gameState_DB: { [chat_id: string]: GameState } = {};
+
 // Function to get or create the game state for a chat
 export const getGameState = (chat_id: string): GameState => {
   if (!gameState_DB[chat_id]) {
@@ -58,10 +61,16 @@ bot.command(["new_game", "n"], (ctx: Context) => {
 });
 
 // TRY a letter
+// TRY a letter
 bot.command(["try", "t"], (ctx: Context) => {
   const chat_id = String(ctx.chat?.id);
   const gameState = getGameState(chat_id);
-  try_command(ctx, gameState);
+
+  // Define the reset function
+  const resetGameCallback = () => resetGame(chat_id);
+
+  // Pass the callback to try_command
+  try_command(ctx, gameState, resetGameCallback);
 });
 
 // WHO STARTS - pick a random player
