@@ -68,7 +68,7 @@ export const try_command = (ctx: Context, gameState: GameState) => {
     return;
   }
 
-  // Almacena una letra si es erroena
+  // Save a letter if is a fail
   gameState?.triedLetters.forEach((letter: string) => {
     if (
       !gameState?.secretWord.includes(letter) &&
@@ -80,7 +80,7 @@ export const try_command = (ctx: Context, gameState: GameState) => {
     }
   });
 
-  // Evalua si Ganaste
+  // Cheks if you win
   if (areArraysEqual(gameState?.secretWord, gameState?.playingWord)) {
     return ctx.replyWithHTML(
       `\n <b>${gameState?.playingWord?.join(
@@ -91,7 +91,7 @@ export const try_command = (ctx: Context, gameState: GameState) => {
     );
   }
 
-  // Evalua si Perdiste
+  // Cheks if you lose
   if (gameState?.loseCounter === 6) {
     return ctx.replyWithHTML(
       `\n <b>${gameState?.secretWord

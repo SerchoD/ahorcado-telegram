@@ -8,7 +8,11 @@ import {
 import { GameState } from "../bot.js";
 import { bot } from "../config.js";
 
-export const new_game = async (ctx: Context, gameState: GameState) => {
+export const new_game = async (
+  ctx: Context,
+  gameState: GameState
+  // resetGame: () => void
+) => {
   // Extract necessary properties from ctx
   const { chat, botInfo, message } = ctx;
 
@@ -73,6 +77,8 @@ export const new_game = async (ctx: Context, gameState: GameState) => {
     gameState.secretWord,
     gameState.triedLetters
   );
+
+  // resetGame();
 
   // Send the response to the chat
   ctx.replyWithHTML(

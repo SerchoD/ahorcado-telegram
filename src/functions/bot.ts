@@ -38,16 +38,21 @@ export const getGameState = (chat_id: string): GameState => {
   return gameState_DB[chat_id];
 };
 
+const resetGame = (chat_id: string) => {
+  gameState_DB[chat_id] = initialState();
+};
+
 // RESET GAME
 bot.command(["reset", "r"], (ctx: Context) => {
   const chat_id = String(ctx.chat?.id);
-  gameState_DB[chat_id] = initialState();
+  resetGame(chat_id);
   reset_command(ctx);
 });
 
 // NEW GAME start a game
 bot.command(["new_game", "n"], (ctx: Context) => {
   const chat_id = String(ctx.chat?.id);
+  resetGame(chat_id);
   const gameState = getGameState(chat_id);
   new_game(ctx, gameState);
 });
@@ -55,7 +60,9 @@ bot.command(["new_game", "n"], (ctx: Context) => {
 // TRY a letter
 bot.command(["try", "t"], (ctx: Context) => {
   const chat_id = String(ctx.chat?.id);
+  console.log("chat_id in bot.ts: ", chat_id);
   const gameState = getGameState(chat_id);
+  console.log("gameState in bot.ts: ", gameState);
   try_command(ctx, gameState);
 });
 
