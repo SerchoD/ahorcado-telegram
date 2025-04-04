@@ -108,7 +108,7 @@ export const try_command = async (
     return;
   }
 
-  // Send a random spicy comment if consecutive fails reach 5
+  // Send a random spicy comment if consecutive fails reach 4 or 5
   const failThreshold = randomMinMax(4, 5);
   if (gameState.consecutiveFails >= failThreshold) {
     const randomComment = getRandomElement(CONSECUTIVE_FAIL_COMMENTS);
