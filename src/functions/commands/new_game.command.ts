@@ -42,7 +42,7 @@ export const new_game = async (ctx: Context, gameState: GameState) => {
         await bot.telegram.deleteMessage(chatId, messageId);
       } else {
         return await ctx.replyWithHTML(
-          `\nNo tengo permisos para borrar mensajes.`
+          `\nPor favor, <b><u>dame permiso de Administrador</u></b>, para Borrar Mensajes.`
         );
       }
     } catch (error: unknown) {
