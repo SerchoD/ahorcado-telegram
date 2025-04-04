@@ -6,9 +6,6 @@ import { try_command } from "./commands/try.command.js";
 import { Context } from "telegraf";
 import { who_starts } from "./commands/who_starts.command.js";
 
-// TODO ver si se puede hacer un initialState
-// TODO Ver de poner frases picantes cada 4 errores seguidos
-
 export interface GameState {
   triedLetters: string[];
   secretWord: string[];
@@ -61,15 +58,11 @@ bot.command(["new_game", "n"], (ctx: Context) => {
 });
 
 // TRY a letter
-// TRY a letter
 bot.command(["try", "t"], (ctx: Context) => {
   const chat_id = String(ctx.chat?.id);
   const gameState = getGameState(chat_id);
-
-  // Define the reset function
   const resetGameCallback = () => resetGame(chat_id);
 
-  // Pass the callback to try_command
   try_command(ctx, gameState, resetGameCallback);
 });
 
