@@ -60,9 +60,7 @@ bot.command(["new_game", "n"], (ctx: Context) => {
 // TRY a letter
 bot.command(["try", "t"], (ctx: Context) => {
   const chat_id = String(ctx.chat?.id);
-  console.log("chat_id in bot.ts: ", chat_id);
   const gameState = getGameState(chat_id);
-  console.log("gameState in bot.ts: ", gameState);
   try_command(ctx, gameState);
 });
 

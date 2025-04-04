@@ -40,10 +40,9 @@ export const try_command = (ctx: Context, gameState: GameState) => {
   const isSecretWord = gameState?.secretWord.length <= 0;
 
   if (isSecretWord) {
-    ctx.replyWithHTML(
+    return ctx.replyWithHTML(
       `\nDebe establecer una palabra con <b>/new_game</b> para empezar a jugar.`
     );
-    return;
   }
 
   const letterWasAlreadyTried = gameState?.triedLetters?.includes(letterToTry);
