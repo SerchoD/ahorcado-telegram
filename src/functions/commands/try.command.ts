@@ -5,7 +5,7 @@ import {
   generatePlayingWord,
   quitarTildes,
 } from "../../utils/utils.js";
-import { GameState, resetState } from "../bot.js";
+import { GameState } from "../bot.js";
 
 export const try_command = (ctx: Context, gameState: GameState) => {
   const messageIsText = ctx.message && "text" in ctx.message;
@@ -40,10 +40,9 @@ export const try_command = (ctx: Context, gameState: GameState) => {
   const isSecretWord = gameState?.secretWord.length <= 0;
 
   if (isSecretWord) {
-    ctx.replyWithHTML(
+    return ctx.replyWithHTML(
       `\nDebe establecer una palabra con <b>/new_game</b> para empezar a jugar.`
     );
-    return;
   }
 
   const letterWasAlreadyTried = gameState?.triedLetters?.includes(letterToTry);
@@ -68,7 +67,7 @@ export const try_command = (ctx: Context, gameState: GameState) => {
     return;
   }
 
-  // Almacena una letra si es erroena
+  // Save a letter if is a fail
   gameState?.triedLetters.forEach((letter: string) => {
     if (
       !gameState?.secretWord.includes(letter) &&
@@ -80,22 +79,20 @@ export const try_command = (ctx: Context, gameState: GameState) => {
     }
   });
 
-  // Evalua si Ganaste
+  // Cheks if you win
   if (areArraysEqual(gameState?.secretWord, gameState?.playingWord)) {
-    ctx.replyWithHTML(
+    return ctx.replyWithHTML(
       `\n <b>${gameState?.playingWord?.join(
         ""
       )}  ( ${gameState?.wrongLetters.join(
         " "
       )} )</b> - <b>VICTORIA! ✅✅✅</b>`
     );
-    resetState();
-    return;
   }
 
-  // Evalua si Perdiste
+  // Cheks if you lose
   if (gameState?.loseCounter === 6) {
-    ctx.replyWithHTML(
+    return ctx.replyWithHTML(
       `\n <b>${gameState?.secretWord
         ?.map((e, index) => {
           if (index === 0) {
@@ -108,11 +105,9 @@ export const try_command = (ctx: Context, gameState: GameState) => {
         " "
       )} )</b> - <b>DERROTA! ❌❌❌</b>`
     );
-    resetState();
-    return;
   }
 
-  ctx.replyWithHTML(
+  return ctx.replyWithHTML(
     `\n <b>${gameState?.playingWord?.join(
       " "
     )}  ( ${gameState?.wrongLetters.join(" ")} )</b>`
