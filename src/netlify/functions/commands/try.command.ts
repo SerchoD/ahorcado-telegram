@@ -1,14 +1,14 @@
 import { Context } from "telegraf";
-import { regex } from "../../data/rexex.js";
+import { regex } from "../../../data/rexex.js";
 import {
   areArraysEqual,
   generatePlayingWord,
   getRandomElement,
   quitarTildes,
   randomMinMax,
-} from "../../utils/utils.js";
+} from "../../../utils/utils.js";
 import { GameState } from "../bot.js";
-import { CONSECUTIVE_FAIL_COMMENTS } from "../../data/data.js";
+import { CONSECUTIVE_FAIL_COMMENTS } from "../../../data/data.js";
 
 export const try_command = async (
   ctx: Context,

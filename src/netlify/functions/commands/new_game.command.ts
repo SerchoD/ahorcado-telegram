@@ -1,10 +1,10 @@
 import { Context } from "telegraf";
-import { regex } from "../../data/rexex.js";
+import { regex } from "../../../data/rexex.js";
 import {
   generatePlayingWord,
   quitarTildes,
   wordToArray,
-} from "../../utils/utils.js";
+} from "../../../utils/utils.js";
 import { GameState } from "../bot.js";
 import { bot } from "../config.js";
 

@@ -1,5 +1,5 @@
 import { Context } from "telegraf";
-import { formatName, getRandomElement } from "../../utils/utils.js";
+import { formatName, getRandomElement } from "../../../utils/utils.js";
 
 export const who_starts = async (ctx: Context) => {
   if (ctx.message && "text" in ctx.message) {
