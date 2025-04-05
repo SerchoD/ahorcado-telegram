@@ -1,6 +1,6 @@
 [build]
   functions = "functions"
-  command = "npx netlify-lambda install && mkdir ./public"
+  command = "mkdir -p ./public"
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
