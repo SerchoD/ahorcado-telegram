@@ -1,7 +1,7 @@
 import { help_command } from "./commands/help.command.js";
 import { reset_command } from "./commands/reset.command.js";
 import { new_game } from "./commands/new_game.command.js";
-import { bot } from "./config.js";
+import { bot } from "../../config/config.js";
 import { try_command } from "./commands/try.command.js";
 import { Context } from "telegraf";
 import { who_starts } from "./commands/who_starts.command.js";

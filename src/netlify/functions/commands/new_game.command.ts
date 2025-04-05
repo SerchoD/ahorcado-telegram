@@ -6,7 +6,7 @@ import {
   wordToArray,
 } from "../../../utils/utils.js";
 import { GameState } from "../bot.js";
-import { bot } from "../config.js";
+import { bot } from "../../../config/config.js";
 
 export const new_game = async (ctx: Context, gameState: GameState) => {
   // Extract necessary properties from ctx
